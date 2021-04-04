@@ -2,7 +2,7 @@ from datetime import datetime
 from itertools import chain, repeat
 from typing import AbstractSet, MutableSet
 
-from .consts import DAY, HOUR, MONTH, WEEK, ZERO
+from .consts import DAY, HOUR, MINUTE, MONTH
 from .types import Snaps
 
 
@@ -12,19 +12,15 @@ def tabulate(snapshots: AbstractSet[datetime], now: datetime) -> Snaps:
     gt_month = {snap for snap in recent if now - snap > MONTH}
     recent -= gt_month
 
-    week_month = {snap for snap in recent if now - snap > WEEK}
-    recent -= week_month
-
-    day_week = {snap for snap in recent if now - snap > DAY}
-    recent -= day_week
+    day_month = {snap for snap in recent if now - snap > DAY}
+    recent -= day_month
 
     hour_day = {snap for snap in recent if now - snap > HOUR}
     recent -= hour_day
 
     snaps = Snaps(
         gt_month=gt_month,
-        week_month=week_month,
-        day_week=day_week,
+        day_month=day_month,
         hour_day=hour_day,
         le_hour=recent,
     )
@@ -39,11 +35,10 @@ def keep(snaps: Snaps) -> AbstractSet[datetime]:
     acc: MutableSet[datetime] = set()
 
     series = (
-        (snaps.le_hour, repeat(ZERO)),
-        (snaps.hourly, chain((ZERO,), repeat(HOUR))),
-        (snaps.daily, chain((HOUR,), repeat(DAY))),
-        (snaps.weekly, repeat(DAY)),
-        (snaps.monthly, chain((WEEK,), repeat(MONTH))),
+        (snaps.le_hour, repeat(MINUTE)),
+        (snaps.hour_day, chain((MINUTE,), repeat(HOUR))),
+        (snaps.day_month, chain((HOUR,), repeat(DAY))),
+        (snaps.gt_month, repeat(DAY)),
     )
 
     prev = datetime.max
