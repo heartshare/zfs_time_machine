@@ -11,9 +11,10 @@ def _unify(paths: AbstractSet[PurePath]) -> AbstractSet[PurePath]:
 
 
 def mon(paths: Iterable[PurePath]) -> None:
+    datasets = _unify({*paths})
     now = now()
     snap_set = ls_snapshots()
-    datasets = _unify({*paths})
+
     for dataset in datasets:
         snapshots = snap_set.get(dataset, set())
         snaps = tabulate(snapshots, now=now)

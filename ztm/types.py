@@ -5,9 +5,8 @@ from typing import AbstractSet
 
 @dataclass(frozen=True)
 class Snaps:
-    yearly: AbstractSet[datetime]
-    monthly: AbstractSet[datetime]
-    weekly: AbstractSet[datetime]
-    daily: AbstractSet[datetime]
-    hourly: AbstractSet[datetime]
-    recent: AbstractSet[datetime]
+    gt_month: AbstractSet[datetime]
+    week_month: AbstractSet[datetime]
+    day_week: AbstractSet[datetime]
+    hour_day: AbstractSet[datetime]
+    le_hour: AbstractSet[datetime]
