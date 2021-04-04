@@ -26,5 +26,3 @@ def main() -> None:
     else:
         assert False
 
-
-main()
