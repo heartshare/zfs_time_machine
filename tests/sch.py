@@ -21,7 +21,7 @@ class Tabulate(TestCase):
             self.now + MINUTE,
         }
         snaps = tabulate(snapshots, now=self.now)
-        self.assertEqual(len(snaps.gt_month), 1)
+        self.assertEqual(len(snaps.month_year), 1)
         self.assertEqual(len(snaps.day_month), 2)
         self.assertEqual(len(snaps.hour_day), 1)
         self.assertEqual(len(snaps.le_hour), 2)

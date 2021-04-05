@@ -2,15 +2,18 @@ from datetime import datetime, timezone
 from itertools import chain, repeat
 from typing import AbstractSet, MutableSet
 
-from .consts import DAY, HOUR, MINUTE, MONTH, WEEK
+from .consts import DAY, HOUR, MINUTE, MONTH, WEEK, YEAR
 from .types import Snaps
 
 
 def tabulate(snapshots: AbstractSet[datetime], now: datetime) -> Snaps:
     recent = {*snapshots}
 
-    gt_month = {snap for snap in recent if now - snap >= MONTH}
-    recent -= gt_month
+    gt_year = {snap for snap in recent if now - snap >= YEAR}
+    recent -= gt_year
+
+    month_year = {snap for snap in recent if now - snap >= MONTH}
+    recent -= month_year
 
     day_month = {snap for snap in recent if now - snap >= DAY}
     recent -= day_month
@@ -22,7 +25,8 @@ def tabulate(snapshots: AbstractSet[datetime], now: datetime) -> Snaps:
     recent -= future
 
     snaps = Snaps(
-        gt_month=gt_month,
+        gt_year=gt_year,
+        month_year=month_year,
         day_month=day_month,
         hour_day=hour_day,
         le_hour=recent,
@@ -43,7 +47,8 @@ def keep(snaps: Snaps) -> AbstractSet[datetime]:
         (snaps.le_hour, repeat(MINUTE)),
         (snaps.hour_day, chain((MINUTE,), repeat(HOUR))),
         (snaps.day_month, chain((HOUR,), repeat(DAY))),
-        (snaps.gt_month, chain((DAY,), repeat(WEEK))),
+        (snaps.month_year, chain((DAY,), repeat(WEEK))),
+        (snaps.gt_year, chain((WEEK,), repeat(MONTH))),
     )
 
     prev = datetime.max.replace(tzinfo=timezone.utc)
