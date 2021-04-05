@@ -44,3 +44,17 @@ class Keep(TestCase):
         snaps = tabulate(snapshots, now=self.now)
         kept = keep(snaps)
         self.assertEqual(snapshots, kept)
+
+    def test_2(self) -> None:
+        snapshots = {
+            self.now - MONTH,
+            self.now - WEEK,
+            self.now - DAY,
+            self.now - HOUR,
+            self.now - MINUTE,
+            self.now,
+            self.now + MINUTE,
+        }
+        snaps = tabulate(snapshots, now=self.now)
+        kept = keep(snaps)
+        self.assertEqual(snapshots, kept)
