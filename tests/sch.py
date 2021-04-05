@@ -30,6 +30,16 @@ class Tabulate(TestCase):
 class Keep(TestCase):
     def setUp(self) -> None:
         self.now = datetime.now(tz=timezone.utc)
+        self.t1 = {self.now - MINUTE * n for n in range(0, HOUR // MINUTE)}
+        self.t2 = {self.now - HOUR * n for n in range(1, DAY // HOUR)}
+        self.t3 = {self.now - DAY * n for n in range(1, MONTH // DAY)}
+        self.t4 = {self.now - WEEK * n for n in range(MONTH // DAY, MONTH // DAY + 500)}
+
+        self.snapshots = self.t1 | self.t2 | self.t3 | self.t4
+        assert len(self.snapshots) == len(self.t1) + len(self.t2) + len(self.t3) + len(
+            self.t4
+        )
+        assert len(self.snapshots) == HOUR // MINUTE + DAY // HOUR + MONTH // DAY + 498
 
     def test_1(self) -> None:
         snapshots = {
@@ -46,14 +56,13 @@ class Keep(TestCase):
         self.assertEqual(snapshots, kept)
 
     def test_2(self) -> None:
-        t1 = {self.now - MINUTE * n for n in range(0, HOUR // MINUTE)}
-        t2 = {self.now - HOUR * n for n in range(1, DAY // HOUR)}
-        t3 = {self.now - DAY * n for n in range(1, MONTH // DAY)}
-        t4 = {self.now - WEEK * n for n in range(MONTH // DAY, MONTH // DAY + 500)}
-        snapshots = t1 | t2 | t3 | t4
-        assert len(snapshots) == len(t1) + len(t2) + len(t3) + len(t4)
-        assert len(snapshots) == HOUR // MINUTE + DAY // HOUR + MONTH // DAY + 498
-
-        snaps = tabulate(snapshots, now=self.now)
+        snaps = tabulate(self.snapshots, now=self.now)
         kept = keep(snaps)
-        self.assertEqual(snapshots, kept)
+        self.assertEqual(self.snapshots, kept)
+
+    def test_3(self) -> None:
+        superfluous = {self.now - MINUTE * n for n in range(100)} - self.snapshots
+        self.snapshots |= superfluous
+        snaps = tabulate(self.snapshots, now=self.now)
+        kept = keep(snaps)
+        self.assertEqual(self.snapshots - kept, superfluous)
