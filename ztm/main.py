@@ -6,7 +6,7 @@ from .ls import pretty_print
 
 def _parse_args() -> Namespace:
     parser = ArgumentParser()
-    subparsers = parser.add_subparsers(title="operation", required=True)
+    subparsers = parser.add_subparsers(dest="operation", required=True)
 
     _ = subparsers.add_parser("ls")
 
