@@ -28,7 +28,7 @@ def ls_datasets() -> AbstractSet[PurePath]:
 
 
 def _unparse(dataset: PurePath, time: datetime) -> str:
-    iso_date = time.isoformat()
+    iso_date = time.replace(tzinfo=None).isoformat()
     name = f"{dataset}@{SNAP_PREFIX}{iso_date}"
     return name
 
@@ -37,8 +37,9 @@ def _parse(fullname: str) -> Optional[Tuple[PurePath, datetime]]:
     dataset, _, snapshot = fullname.partition("@")
     if snapshot.startswith(SNAP_PREFIX):
         maybe_date = snapshot[len(SNAP_PREFIX) :]
+        maybe_iso = maybe_date + "+00:00"
         try:
-            dt = datetime.fromisoformat(maybe_date)
+            dt = datetime.fromisoformat(maybe_iso)
         except ValueError:
             return None
         else:
