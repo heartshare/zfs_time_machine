@@ -49,11 +49,23 @@ class Keep(TestCase):
     def test_2(self) -> None:
         snapshots = {
             *chain(
-                (self.now + MINUTE * n for n in range(HOUR // MINUTE)),
-                (self.now + HOUR * n for n in range(DAY // HOUR)),
-                (self.now + DAY * n for n in range(MONTH // DAY)),
+                (self.now - MINUTE * n for n in range(HOUR // MINUTE + 1)),
+                (self.now - HOUR * n for n in range(DAY // HOUR + 1)),
+                (self.now - DAY * n for n in range(MONTH // DAY + 1)),
             )
         }
         snaps = tabulate(snapshots, now=self.now)
         kept = keep(snaps)
         self.assertEqual(snapshots, kept)
+
+    def test_3(self) -> None:
+        snapshots = {
+            *chain(
+                (self.now - MINUTE * n for n in range(HOUR // MINUTE + 2)),
+                (self.now - HOUR * n for n in range(DAY // HOUR + 2)),
+                (self.now - DAY * n for n in range(MONTH // DAY + 2)),
+            )
+        }
+        snaps = tabulate(snapshots, now=self.now)
+        kept = keep(snaps)
+        self.assertEqual(len(snapshots) - 3, len(kept))
