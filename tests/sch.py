@@ -68,4 +68,4 @@ class Keep(TestCase):
         }
         snaps = tabulate(snapshots, now=self.now)
         kept = keep(snaps)
-        self.assertEqual(len(snapshots) - 3, len(kept))
+        self.assertEqual(len(snapshots - kept), 3)
