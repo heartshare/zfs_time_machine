@@ -1,23 +1,19 @@
 from datetime import datetime, timezone
-from pathlib import PurePath
 from subprocess import CalledProcessError
 from sys import stderr
 from time import sleep
-from typing import AbstractSet, Iterable
 
 from .sch import keep, tabulate, take
-from .zfs import ls_snapshots, rm_snapshot, take_snapshot
+from .zfs import ls_snapshots, rm_snapshot, take_snapshot, ls_datasets
 
 
-def _unify(paths: AbstractSet[PurePath]) -> AbstractSet[PurePath]:
-    return {p for p in paths if {*p.parents}.isdisjoint(paths)}
 
 
-def mon(paths: Iterable[PurePath]) -> None:
-    datasets = _unify({*paths})
+def mon() -> None:
     while True:
         now = datetime.now(tz=timezone.utc).replace(microsecond=0)
         try:
+            datasets = ls_datasets()
             snap_set = ls_snapshots()
 
             for dataset in datasets:

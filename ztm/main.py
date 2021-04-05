@@ -1,8 +1,9 @@
 from argparse import ArgumentParser, Namespace
 from pathlib import PurePath
 
-from .ls import pretty_print
 from .daemon import mon
+from .ls import pretty_print
+
 
 def _parse_args() -> Namespace:
     parser = ArgumentParser()
@@ -10,8 +11,7 @@ def _parse_args() -> Namespace:
 
     _ = subparsers.add_parser("ls")
 
-    daemon = subparsers.add_parser("daemon")
-    daemon.add_argument("datasets", type=PurePath, nargs="+")
+    _ = subparsers.add_parser("daemon")
 
     return parser.parse_args()
 
@@ -22,7 +22,6 @@ def main() -> None:
     if args.operation == "ls":
         pretty_print()
     elif args.operation == "daemon":
-        mon(args.datasets)
+        mon()
     else:
         assert False
-

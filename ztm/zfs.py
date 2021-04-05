@@ -6,6 +6,14 @@ from typing import AbstractSet, Mapping, MutableMapping, MutableSet, Optional, T
 from .consts import SNAP_PREFIX
 
 
+def _unify(paths: AbstractSet[PurePath]) -> AbstractSet[PurePath]:
+    return {p for p in paths if {*p.parents}.isdisjoint(paths)}
+
+
+def ls_datasets() -> AbstractSet[PurePath]:
+    return _unify(set())
+
+
 def _unparse(dataset: PurePath, time: datetime) -> str:
     iso_date = time.isoformat()
     name = f"{dataset}@{SNAP_PREFIX}{iso_date}"
