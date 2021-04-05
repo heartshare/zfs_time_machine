@@ -20,8 +20,7 @@ def ls_datasets() -> AbstractSet[PurePath]:
         if line.startswith("-"):
             pass
         else:
-            _, _, rhs = line.partition(" ")
-            dataset = rhs.lstrip()
+            _, _, dataset = line.partition("\t")
             acc.add(PurePath(dataset))
 
     datasets = _unify(acc)

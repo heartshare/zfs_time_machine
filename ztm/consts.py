@@ -2,7 +2,7 @@ from datetime import timedelta
 
 DATASET_MARK = "time-machine:status"
 
-SNAP_PREFIX = "##"
+SNAP_PREFIX = "$$"
 
 MINUTE = timedelta(minutes=1)
 HOUR = timedelta(hours=1)
