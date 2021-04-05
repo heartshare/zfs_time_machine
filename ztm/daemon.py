@@ -4,9 +4,7 @@ from sys import stderr
 from time import sleep
 
 from .sch import keep, tabulate, take
-from .zfs import ls_snapshots, rm_snapshot, take_snapshot, ls_datasets
-
-
+from .zfs import ls_datasets, ls_snapshots, rm_snapshot, take_snapshot
 
 
 def mon() -> None:
