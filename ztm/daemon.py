@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from os import linesep
 from subprocess import CalledProcessError
 from sys import stderr
 from time import sleep
@@ -25,6 +26,6 @@ def mon() -> None:
                 for time in snapshots - do_keep:
                     rm_snapshot(dataset, time=time)
         except CalledProcessError as e:
-            print(e.cmd, e, file=stderr)
+            print(e.cmd, e, sep=linesep, file=stderr)
 
         sleep(60)
