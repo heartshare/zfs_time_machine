@@ -1,5 +1,7 @@
 from datetime import timedelta
 
+DATASET_MARK = "time-machine:status"
+
 SNAP_PREFIX = "##"
 
 MINUTE = timedelta(minutes=1)

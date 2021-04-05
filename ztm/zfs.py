@@ -3,7 +3,7 @@ from pathlib import PurePath
 from subprocess import check_call, check_output
 from typing import AbstractSet, Mapping, MutableMapping, MutableSet, Optional, Tuple
 
-from .consts import SNAP_PREFIX
+from .consts import DATASET_MARK, SNAP_PREFIX
 
 
 def _unify(paths: AbstractSet[PurePath]) -> AbstractSet[PurePath]:
@@ -11,7 +11,21 @@ def _unify(paths: AbstractSet[PurePath]) -> AbstractSet[PurePath]:
 
 
 def ls_datasets() -> AbstractSet[PurePath]:
-    return _unify(set())
+    raw = check_output(
+        ("zfs", "get", DATASET_MARK, "-H", "-o", "value,name"), text=True
+    ).rstrip()
+    acc: MutableSet[PurePath] = set()
+
+    for line in raw.splitlines():
+        if line.startswith("-"):
+            pass
+        else:
+            _, _, rhs = line.partition(" ")
+            dataset = rhs.lstrip()
+            acc.add(PurePath(dataset))
+
+    datasets = _unify(acc)
+    return datasets
 
 
 def _unparse(dataset: PurePath, time: datetime) -> str:

@@ -1,5 +1,4 @@
 from argparse import ArgumentParser, Namespace
-from pathlib import PurePath
 
 from .daemon import mon
 from .ls import pretty_print
