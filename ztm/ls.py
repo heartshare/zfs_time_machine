@@ -18,6 +18,6 @@ def pretty_print() -> None:
     for key in sorted(snap_set.keys(), key=lambda k: strxfrm(str(k))):
         for val in sorted(snap_set[key], reverse=True):
             value = _utc_to_local(val).strftime("%x %X %Z")
-            acc.setdefault(str(key)).append(value)
+            acc.setdefault(str(key), []).append(value)
 
     dump(acc, stdout, check_circular=False, ensure_ascii=False, indent=2)
