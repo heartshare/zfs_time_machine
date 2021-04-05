@@ -49,9 +49,10 @@ class Keep(TestCase):
         t1 = {self.now - MINUTE * n for n in range(0, HOUR // MINUTE)}
         t2 = {self.now - HOUR * n for n in range(1, DAY // HOUR)}
         t3 = {self.now - DAY * n for n in range(1, MONTH // DAY)}
-        t4 = {self.now - WEEK * n for n in range(MONTH // DAY, 500)}
+        t4 = {self.now - WEEK * n for n in range(MONTH // DAY, MONTH // DAY + 500)}
         snapshots = t1 | t2 | t3 | t4
         assert len(snapshots) == len(t1) + len(t2) + len(t3) + len(t4)
+        assert len(snapshots) == HOUR // MINUTE + DAY // HOUR + MONTH // DAY + 498
 
         snaps = tabulate(snapshots, now=self.now)
         kept = keep(snaps)
