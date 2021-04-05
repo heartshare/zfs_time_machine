@@ -2,6 +2,14 @@
 
 Zero conf ZFS snapshot daemon
 
+## One Conf
+
+Ok, just mark the datasets that you want to keep
+
+```sh
+zfs set time-machine:status=on <dataset>
+```
+
 ## Schedule
 
 ```txt
