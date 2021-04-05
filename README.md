@@ -4,7 +4,7 @@ Zero conf ZFS snapshot daemon
 
 ## One Conf
 
-Ok, just mark the datasets that you want to snapshot
+Just mark the datasets that you want to snapshot
 
 ```sh
 zfs set time-machine:status=on <dataset>
