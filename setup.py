@@ -16,7 +16,7 @@ setup(
     long_description_content_type="text/markdown",
     author="ms-jpq",
     author_email="github@bigly.dog",
-    url="https://github.com/ms-jpq/zfs-timemachine",
+    url="https://github.com/ms-jpq/zfs_time_machine",
     packages=packages,
     package_data=package_data,
 )
