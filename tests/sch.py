@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from os import linesep
 from unittest import TestCase
 
 from ..ztm.consts import DAY, HOUR, MINUTE, MONTH, WEEK
@@ -33,13 +34,14 @@ class Keep(TestCase):
         self.t1 = {self.now - MINUTE * n for n in range(0, HOUR // MINUTE)}
         self.t2 = {self.now - HOUR * n for n in range(1, DAY // HOUR)}
         self.t3 = {self.now - DAY * n for n in range(1, MONTH // DAY)}
-        self.t4 = {self.now - WEEK * n for n in range(MONTH // DAY, MONTH // DAY + 500)}
+        self.t4 = {
+            self.now - WEEK * n for n in range(MONTH // WEEK + 1, MONTH // DAY + 500)
+        }
 
         self.snapshots = self.t1 | self.t2 | self.t3 | self.t4
         assert len(self.snapshots) == len(self.t1) + len(self.t2) + len(self.t3) + len(
             self.t4
         )
-        assert len(self.snapshots) == HOUR // MINUTE + DAY // HOUR + MONTH // DAY + 498
 
     def test_1(self) -> None:
         snapshots = {
@@ -73,3 +75,9 @@ class Keep(TestCase):
         snaps = tabulate(self.snapshots, now=self.now)
         kept = keep(snaps)
         self.assertEqual(self.snapshots - kept, superfluous)
+
+    def test_5(self) -> None:
+        snapshots = {self.now - MINUTE * n for n in range(2 ** 17)}
+        snaps = tabulate(snapshots, now=self.now)
+        kept = keep(snaps)
+        print(*(self.now - t for t in sorted(kept, reverse=True)), sep=linesep)
