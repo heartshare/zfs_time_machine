@@ -66,3 +66,10 @@ class Keep(TestCase):
         snaps = tabulate(self.snapshots, now=self.now)
         kept = keep(snaps)
         self.assertEqual(self.snapshots - kept, superfluous)
+
+    def test_4(self) -> None:
+        superfluous = {self.now - HOUR * n for n in range(100)} - self.snapshots
+        self.snapshots |= superfluous
+        snaps = tabulate(self.snapshots, now=self.now)
+        kept = keep(snaps)
+        self.assertEqual(self.snapshots - kept, superfluous)
