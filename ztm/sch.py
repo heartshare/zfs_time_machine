@@ -44,7 +44,7 @@ def keep(snaps: Snaps) -> AbstractSet[datetime]:
         (snaps.gt_month, repeat(DAY)),
     )
 
-    acc.update(chain(snaps.future, snaps.le_hour))
+    acc |= snaps.future | snaps.le_hour
 
     prev = datetime.max.replace(tzinfo=timezone.utc)
     for snapshots, deltas in series:

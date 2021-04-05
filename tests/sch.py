@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from itertools import chain
 from unittest import TestCase
 
 from ..ztm.consts import DAY, HOUR, MINUTE, MONTH, WEEK
@@ -47,13 +48,11 @@ class Keep(TestCase):
 
     def test_2(self) -> None:
         snapshots = {
-            self.now - MONTH,
-            self.now - WEEK,
-            self.now - DAY,
-            self.now - HOUR,
-            self.now - MINUTE,
-            self.now,
-            self.now + MINUTE,
+            *chain(
+                (self.now + MINUTE * n for n in range(HOUR // MINUTE)),
+                (self.now + HOUR * n for n in range(DAY // HOUR)),
+                (self.now + DAY * n for n in range(MONTH // DAY)),
+            )
         }
         snaps = tabulate(snapshots, now=self.now)
         kept = keep(snaps)
