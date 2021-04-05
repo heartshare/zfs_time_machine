@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from itertools import chain, repeat
 from typing import AbstractSet, MutableSet
 
@@ -18,11 +18,15 @@ def tabulate(snapshots: AbstractSet[datetime], now: datetime) -> Snaps:
     hour_day = {snap for snap in recent if now - snap >= HOUR}
     recent -= hour_day
 
+    future = {snap for snap in recent if snap > now}
+    recent -= future
+
     snaps = Snaps(
         gt_month=gt_month,
         day_month=day_month,
         hour_day=hour_day,
         le_hour=recent,
+        future=future,
     )
     return snaps
 
@@ -35,13 +39,14 @@ def keep(snaps: Snaps) -> AbstractSet[datetime]:
     acc: MutableSet[datetime] = set()
 
     series = (
-        (snaps.le_hour, repeat(MINUTE)),
         (snaps.hour_day, chain((MINUTE,), repeat(HOUR))),
         (snaps.day_month, chain((HOUR,), repeat(DAY))),
         (snaps.gt_month, repeat(DAY)),
     )
 
-    prev = datetime.max
+    acc.update(chain(snaps.future, snaps.le_hour))
+
+    prev = datetime.max.replace(tzinfo=timezone.utc)
     for snapshots, deltas in series:
         for snapshot, delta in zip(sorted(snapshots, reverse=True), deltas):
             if prev - snapshot >= delta:

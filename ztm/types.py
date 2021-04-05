@@ -9,3 +9,4 @@ class Snaps:
     day_month: AbstractSet[datetime]
     hour_day: AbstractSet[datetime]
     le_hour: AbstractSet[datetime]
+    future: AbstractSet[datetime]
