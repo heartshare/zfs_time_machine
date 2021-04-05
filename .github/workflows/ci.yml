@@ -32,3 +32,5 @@ jobs:
       - name: Lint
         run: ./lint.sh
 
+      - name: Test
+        run: ./test.py
