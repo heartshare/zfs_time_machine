@@ -1,5 +1,4 @@
 from datetime import datetime, timezone
-from itertools import chain
 from unittest import TestCase
 
 from ..ztm.consts import DAY, HOUR, MINUTE, MONTH, WEEK
@@ -47,25 +46,23 @@ class Keep(TestCase):
         self.assertEqual(snapshots, kept)
 
     def test_2(self) -> None:
-        snapshots = {
-            *chain(
-                (self.now - MINUTE * n for n in range(HOUR // MINUTE + 1)),
-                (self.now - HOUR * n for n in range(DAY // HOUR + 1)),
-                (self.now - DAY * n for n in range(MONTH // DAY + 1)),
-            )
-        }
+        t1 = {self.now - MINUTE * n for n in range(HOUR // MINUTE + 1)}
+        t2 = {self.now - HOUR * n for n in range(DAY // HOUR + 1)}
+        t3 = {self.now - DAY * n for n in range(MONTH // DAY + 1)}
+        snapshots = t1 | t2 | t3
+        assert len(snapshots) == len(t1) + len(t2) + len(t3)
+
         snaps = tabulate(snapshots, now=self.now)
         kept = keep(snaps)
         self.assertEqual(snapshots, kept)
 
     def test_3(self) -> None:
-        snapshots = {
-            *chain(
-                (self.now - MINUTE * n for n in range(HOUR // MINUTE + 2)),
-                (self.now - HOUR * n for n in range(DAY // HOUR + 2)),
-                (self.now - DAY * n for n in range(MONTH // DAY + 2)),
-            )
-        }
+        t1 = {self.now - MINUTE * n for n in range(HOUR // MINUTE + 2)}
+        t2 = {self.now - HOUR * n for n in range(DAY // HOUR + 2)}
+        t3 = {self.now - DAY * n for n in range(MONTH // DAY + 2)}
+        snapshots = t1 | t2 | t3
+        assert len(snapshots) == len(t1) + len(t2) + len(t3)
+
         snaps = tabulate(snapshots, now=self.now)
         kept = keep(snaps)
         self.assertEqual(len(snapshots - kept), 3)

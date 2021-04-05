@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from itertools import chain, repeat
 from typing import AbstractSet, MutableSet
 
-from .consts import DAY, HOUR, MINUTE, MONTH
+from .consts import DAY, HOUR, MINUTE, MONTH, WEEK
 from .types import Snaps
 
 
@@ -39,12 +39,12 @@ def keep(snaps: Snaps) -> AbstractSet[datetime]:
     acc: MutableSet[datetime] = set()
 
     series = (
+        (snaps.future, repeat(MINUTE)),
+        (snaps.le_hour, repeat(MINUTE)),
         (snaps.hour_day, chain((MINUTE,), repeat(HOUR))),
         (snaps.day_month, chain((HOUR,), repeat(DAY))),
-        (snaps.gt_month, repeat(DAY)),
+        (snaps.gt_month, chain((DAY,), repeat(WEEK))),
     )
-
-    acc |= snaps.future | snaps.le_hour
 
     prev = datetime.max.replace(tzinfo=timezone.utc)
     for snapshots, deltas in series:
