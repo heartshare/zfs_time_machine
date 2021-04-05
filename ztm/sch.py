@@ -9,13 +9,13 @@ from .types import Snaps
 def tabulate(snapshots: AbstractSet[datetime], now: datetime) -> Snaps:
     recent = {*snapshots}
 
-    gt_month = {snap for snap in recent if now - snap > MONTH}
+    gt_month = {snap for snap in recent if now - snap >= MONTH}
     recent -= gt_month
 
-    day_month = {snap for snap in recent if now - snap > DAY}
+    day_month = {snap for snap in recent if now - snap >= DAY}
     recent -= day_month
 
-    hour_day = {snap for snap in recent if now - snap > HOUR}
+    hour_day = {snap for snap in recent if now - snap >= HOUR}
     recent -= hour_day
 
     snaps = Snaps(
