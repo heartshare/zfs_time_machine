@@ -25,6 +25,6 @@ def mon() -> None:
                 for time in snapshots - do_keep:
                     rm_snapshot(dataset, time=time)
         except CalledProcessError as e:
-            print(e, file=stderr)
+            print(e.cmd, e, file=stderr)
 
         sleep(60)
