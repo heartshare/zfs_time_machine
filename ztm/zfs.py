@@ -12,7 +12,8 @@ def _unify(paths: AbstractSet[PurePath]) -> AbstractSet[PurePath]:
 
 def ls_datasets() -> AbstractSet[PurePath]:
     raw = check_output(
-        ("zfs", "get", DATASET_MARK, "-H", "-o", "value,name"), text=True
+        ("zfs", "get", DATASET_MARK, "-t", "filesystem", "-H", "-o", "value,name"),
+        text=True,
     ).rstrip()
     acc: MutableSet[PurePath] = set()
 
